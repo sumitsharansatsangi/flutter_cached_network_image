@@ -1,3 +1,6 @@
+## [1.0.3] - 2023-07-20
+* Support for Dart 3
+
 ## [1.0.2] - 2022-08-31
 * Added loadBufferAsync and deprecated loadAsync
 

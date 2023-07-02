@@ -31,9 +31,9 @@ class ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    Function()? errorListener,
+    void Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    Function() evictImage,
+    void Function() evictImage,
   ) {
     throw UnimplementedError();
   }
@@ -49,9 +49,9 @@ class ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    Function()? errorListener,
+    void Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    Function() evictImage,
+    void Function() evictImage,
   ) {
     throw UnimplementedError();
   }

@@ -40,7 +40,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
     if (chunkEvents != null) {
       _chunkSubscription = chunkEvents.listen(
         reportImageChunkEvent,
-        onError: (dynamic error, StackTrace stack) {
+        onError: (Object error, StackTrace stack) {
           reportError(
             context: ErrorDescription('loading an image'),
             exception: error,
@@ -125,7 +125,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   Future<void> _decodeNextFrameAndSchedule() async {
     try {
       _nextFrame = await _codec!.getNextFrame();
-    } catch (exception, stack) {
+    } on Object catch (exception, stack) {
       reportError(
         context: ErrorDescription('resolving an image frame'),
         exception: exception,

@@ -154,7 +154,7 @@ class CachedNetworkImageProvider
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is CachedNetworkImageProvider) {
       return ((cacheKey ?? url) == (other.cacheKey ?? other.url)) &&
           scale == other.scale &&

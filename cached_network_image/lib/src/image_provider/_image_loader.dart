@@ -27,9 +27,9 @@ class ImageLoader implements platform.ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    Function()? errorListener,
+    void Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    Function() evictImage,
+    void Function() evictImage,
   ) {
     return _load(
       url,
@@ -56,9 +56,9 @@ class ImageLoader implements platform.ImageLoader {
       int? maxHeight,
       int? maxWidth,
       Map<String, String>? headers,
-      Function()? errorListener,
+      void Function()? errorListener,
       ImageRenderMethodForWeb imageRenderMethodForWeb,
-      Function() evictImage) {
+      void Function() evictImage) {
     return _load(
       url,
       cacheKey,
@@ -86,9 +86,9 @@ class ImageLoader implements platform.ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    Function()? errorListener,
+    void Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    Function() evictImage,
+    void Function() evictImage,
   ) async* {
     try {
       assert(
@@ -98,7 +98,7 @@ class ImageLoader implements platform.ImageLoader {
           'CacheManager needs to be an ImageCacheManager. maxWidth and '
           'maxHeight will be ignored when a normal CacheManager is used.');
 
-      var stream = cacheManager is ImageCacheManager
+      final stream = cacheManager is ImageCacheManager
           ? cacheManager.getImageFile(url,
               maxHeight: maxHeight,
               maxWidth: maxWidth,
@@ -108,7 +108,7 @@ class ImageLoader implements platform.ImageLoader {
           : cacheManager.getFileStream(url,
               withProgress: true, headers: headers, key: cacheKey);
 
-      await for (var result in stream) {
+      await for (final result in stream) {
         if (result is DownloadProgress) {
           chunkEvents.add(ImageChunkEvent(
             cumulativeBytesLoaded: result.downloaded,
@@ -116,13 +116,13 @@ class ImageLoader implements platform.ImageLoader {
           ));
         }
         if (result is FileInfo) {
-          var file = result.file;
-          var bytes = await file.readAsBytes();
-          var decoded = await decode(bytes);
+          final file = result.file;
+          final bytes = await file.readAsBytes();
+          final decoded = await decode(bytes);
           yield decoded;
         }
       }
-    } catch (e) {
+    } on Object catch (_) {
       // Depending on where the exception was thrown, the image cache may not
       // have had a chance to track the key in the cache at all.
       // Schedule a microtask to give the cache a chance to add the key.

@@ -3,7 +3,6 @@ library cached_network_image_web;
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'dart:ui';
 
 import 'package:cached_network_image_platform_interface'
         '/cached_network_image_platform_interface.dart' as platform
@@ -27,9 +26,9 @@ class ImageLoader implements platform.ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    Function()? errorListener,
+    void Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    Function() evictImage,
+    void Function() evictImage,
   ) {
     return _load(
       url,
@@ -56,16 +55,16 @@ class ImageLoader implements platform.ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    Function()? errorListener,
+    void Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    Function() evictImage,
+    void Function() evictImage,
   ) {
     return _load(
       url,
       cacheKey,
       chunkEvents,
       (bytes) async {
-        final buffer = await ImmutableBuffer.fromUint8List(bytes);
+        final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
         return decode(buffer);
       },
       cacheManager,
@@ -87,9 +86,9 @@ class ImageLoader implements platform.ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    Function()? errorListener,
+    void Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    Function() evictImage,
+    void Function() evictImage,
   ) {
     switch (imageRenderMethodForWeb) {
       case ImageRenderMethodForWeb.HttpGet:
@@ -119,12 +118,16 @@ class ImageLoader implements platform.ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    Function()? errorListener,
-    Function() evictImage,
+    void Function()? errorListener,
+    void Function() evictImage,
   ) async* {
     try {
-      await for (var result in cacheManager.getFileStream(url,
-          withProgress: true, headers: headers)) {
+      await for (var result in cacheManager.getFileStream(
+        url,
+        key: cacheKey,
+        withProgress: true,
+        headers: headers,
+      )) {
         if (result is DownloadProgress) {
           chunkEvents.add(ImageChunkEvent(
             cumulativeBytesLoaded: result.downloaded,
@@ -132,13 +135,13 @@ class ImageLoader implements platform.ImageLoader {
           ));
         }
         if (result is FileInfo) {
-          var file = result.file;
-          var bytes = await file.readAsBytes();
-          var decoded = await decode(bytes);
+          final file = result.file;
+          final bytes = await file.readAsBytes();
+          final decoded = await decode(bytes);
           yield decoded;
         }
       }
-    } catch (e) {
+    } on Object catch (_) {
       // Depending on where the exception was thrown, the image cache may not
       // have had a chance to track the key in the cache at all.
       // Schedule a microtask to give the cache a chance to add the key.

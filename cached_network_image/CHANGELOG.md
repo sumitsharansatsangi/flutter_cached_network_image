@@ -1,3 +1,7 @@
+## [3.2.4] - 2023-06-20
+* Support for Dart 3
+
+
 ## [3.2.3] - 2022-11-25
 * Correctly dispose image stream handler
 
