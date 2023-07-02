@@ -1,8 +1,9 @@
 name: example
 description: A new Flutter project.
+publish_to: "none"
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=3.3.0"
 
 dependencies:
@@ -10,10 +11,7 @@ dependencies:
     sdk: flutter
   cached_network_image:
     path: ../
-  baseflow_plugin_template:
-    git:
-      url: https://github.com/Baseflow/baseflow_plugin_template.git
-      ref: 922aa52773308bec29f0cfa2661b43ecdedd50c5
+  baseflow_plugin_template: ^2.1.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -22,7 +20,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.0
 
 
 # For information on the generic Dart part of this file, see the
