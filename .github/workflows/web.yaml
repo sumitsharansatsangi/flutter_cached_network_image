@@ -100,9 +100,9 @@ jobs:
         run: flutter test --platform chrome
         working-directory: ${{env.source-directory}}
 
-#      # Upload code coverage information
-#      - uses: codecov/codecov-action@v1
-#        with:
-#          files: ${{env.source-directory}}/coverage/lcov.info
-#          name: CachedNetworkImage (Web)
-#          fail_ci_if_error: true
+      # # Upload code coverage information
+      # - uses: codecov/codecov-action@v1
+      #   with:
+      #     files: ${{env.source-directory}}/coverage/lcov.info
+      #     name: CachedNetworkImage (Web)
+      #     fail_ci_if_error: true

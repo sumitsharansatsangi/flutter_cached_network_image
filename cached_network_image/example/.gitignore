@@ -2,6 +2,10 @@
 *.class
 *.log
 *.pyc
+<<<<<<< HEAD
+=======
+*.swp
+>>>>>>> origin/deprecate
 .DS_Store
 .atom/
 .buildlog/
@@ -27,8 +31,13 @@ migrate_working_dir/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
+<<<<<<< HEAD
 .pub/
 
+=======
+.pub-cache/
+.pub/
+>>>>>>> origin/deprecate
 /build/
 
 # Symbolication related
@@ -40,4 +49,8 @@ app.*.map.json
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
+<<<<<<< HEAD
 /android/app/release
+=======
+/android/app/release
+>>>>>>> origin/deprecate

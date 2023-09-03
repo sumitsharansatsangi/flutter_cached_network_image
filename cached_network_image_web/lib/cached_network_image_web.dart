@@ -1,3 +1,4 @@
+/// Web implementation of CachedNetworkImage
 library cached_network_image_web;
 
 import 'dart:async';
@@ -15,26 +16,29 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 /// ImageLoader class to load images on the web platform.
 class ImageLoader implements platform.ImageLoader {
-  @Deprecated('use loadBufferAsync instead')
+  @Deprecated('Use loadImageAsync instead')
   @override
-  Stream<ui.Codec> loadAsync(
+  Stream<ui.Codec> loadBufferAsync(
     String url,
     String? cacheKey,
     StreamController<ImageChunkEvent> chunkEvents,
-    DecoderCallback decode,
+    DecoderBufferCallback decode,
     BaseCacheManager cacheManager,
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    void Function()? errorListener,
+    ValueChanged<Object>? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    void Function() evictImage,
+    VoidCallback evictImage,
   ) {
     return _load(
       url,
       cacheKey,
       chunkEvents,
-      decode,
+      (bytes) async {
+        final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+        return decode(buffer);
+      },
       cacheManager,
       maxHeight,
       maxWidth,
@@ -46,18 +50,18 @@ class ImageLoader implements platform.ImageLoader {
   }
 
   @override
-  Stream<ui.Codec> loadBufferAsync(
+  Stream<ui.Codec> loadImageAsync(
     String url,
     String? cacheKey,
     StreamController<ImageChunkEvent> chunkEvents,
-    DecoderBufferCallback decode,
+    ImageDecoderCallback decode,
     BaseCacheManager cacheManager,
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    void Function()? errorListener,
+    ValueChanged<Object>? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    void Function() evictImage,
+    VoidCallback evictImage,
   ) {
     return _load(
       url,
@@ -86,9 +90,9 @@ class ImageLoader implements platform.ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    void Function()? errorListener,
+    ValueChanged<Object>? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
-    void Function() evictImage,
+    VoidCallback evictImage,
   ) {
     switch (imageRenderMethodForWeb) {
       case ImageRenderMethodForWeb.HttpGet:
@@ -118,21 +122,23 @@ class ImageLoader implements platform.ImageLoader {
     int? maxHeight,
     int? maxWidth,
     Map<String, String>? headers,
-    void Function()? errorListener,
-    void Function() evictImage,
+    ValueChanged<Object>? errorListener,
+    VoidCallback evictImage,
   ) async* {
     try {
-      await for (var result in cacheManager.getFileStream(
+      await for (final result in cacheManager.getFileStream(
         url,
         key: cacheKey,
         withProgress: true,
         headers: headers,
       )) {
         if (result is DownloadProgress) {
-          chunkEvents.add(ImageChunkEvent(
-            cumulativeBytesLoaded: result.downloaded,
-            expectedTotalBytes: result.totalSize,
-          ));
+          chunkEvents.add(
+            ImageChunkEvent(
+              cumulativeBytesLoaded: result.downloaded,
+              expectedTotalBytes: result.totalSize,
+            ),
+          );
         }
         if (result is FileInfo) {
           final file = result.file;
@@ -141,19 +147,17 @@ class ImageLoader implements platform.ImageLoader {
           yield decoded;
         }
       }
-    } on Object catch (_) {
+    } on Object catch (e) {
       // Depending on where the exception was thrown, the image cache may not
       // have had a chance to track the key in the cache at all.
       // Schedule a microtask to give the cache a chance to add the key.
       scheduleMicrotask(() {
         evictImage();
       });
-
-      errorListener?.call();
+      errorListener?.call(e);
       rethrow;
-    } finally {
-      await chunkEvents.close();
     }
+    await chunkEvents.close();
   }
 
   Future<ui.Codec> _loadAsyncHtmlImage(
@@ -161,7 +165,6 @@ class ImageLoader implements platform.ImageLoader {
     StreamController<ImageChunkEvent> chunkEvents,
   ) {
     final resolved = Uri.base.resolve(url);
-
     // ignore: undefined_function
     return ui.webOnlyInstantiateImageCodecFromUrl(
       resolved,
