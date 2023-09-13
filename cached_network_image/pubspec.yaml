@@ -9,8 +9,8 @@ topics:
 publish_to: none  
 version: 3.2.4
 environment:
-  sdk: ^3.0.0
-  flutter: '>=3.10.0'
+  sdk: ^3.1.0
+  flutter: '>=3.13.0'
 
 dependencies:
   cached_network_image_platform_interface:
@@ -19,12 +19,16 @@ dependencies:
     git: https://github.com/sumitsharansatsangi/cached_network_image_web.git
   flutter:
     sdk: flutter
-  flutter_cache_manager: ^3.3.1
+  flutter_cache_manager:
+    git: 
+      url: https://github.com/sumitsharansatsangi/flutter_cache_manager.git
+      path: flutter_cache_manager
   octo_image: ^1.0.2
 
 dev_dependencies:
   file: '>=6.1.4 <8.0.0'
-  flutter_lints: ^2.0.3
+  flutter_lints: 
+    git: https://github.com/kumsumit/flutter_lints.git
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.0

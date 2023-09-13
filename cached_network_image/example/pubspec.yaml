@@ -7,7 +7,8 @@ environment:
   flutter: '>=3.10.0'
 
 dependencies:
-  baseflow_plugin_template: ^2.1.2
+  baseflow_plugin_template: 
+    git: https://github.com/kumsumit/baseflow_plugin_template.git 
   cached_network_image:
     path: ../
   flutter:
@@ -17,7 +18,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.3
+  flutter_lints: 
+    git: https://github.com/kumsumit/flutter_lints.git 
+    
 
 flutter:
   uses-material-design: true
